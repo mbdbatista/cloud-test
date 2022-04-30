@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: cloudTest
+netty:
+  default:
+    allocator:
+      max-order: 3
