@@ -7,5 +7,7 @@ data class Pet (
     val name: String,
     val type: String,
     val gender: String,
-    val adoptedDate: LocalDateTime?
+    val adoptedDate: LocalDateTime?,
+    val createdAt: LocalDateTime?,
+    val updatedAt: LocalDateTime?
     )

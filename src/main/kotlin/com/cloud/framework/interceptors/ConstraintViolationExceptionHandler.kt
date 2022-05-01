@@ -2,7 +2,7 @@ package com.cloud.framework.interceptors
 
 import com.cloud.adapter.serializers.output.BaseOutput
 import com.cloud.adapter.serializers.output.ErrorOutput
-import com.cloud.framework.ResourceNotFoundException
+import com.cloud.business.errors.ResourceNotFoundException
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
@@ -36,7 +36,7 @@ class ConstraintViolationExceptionHandler: ExceptionHandler<ConstraintViolationE
 class ResourceNotFoundExceptionHandler: ExceptionHandler<ResourceNotFoundException, HttpResponse<*>> {
     override fun handle(request: HttpRequest<*>?, exception: ResourceNotFoundException?): HttpResponse<*> {
         val errors = mutableListOf(
-            ErrorOutput(code = "RNG-001", message = "Resource not found")
+            ErrorOutput(exception?.code ?: "PET-000", exception?.message ?: "Unexpected error")
         )
         val response = BaseOutput<Any>(errors = errors)
         return HttpResponse.badRequest(response)

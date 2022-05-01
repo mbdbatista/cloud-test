@@ -5,3 +5,7 @@ netty:
   default:
     allocator:
       max-order: 3
+
+mongodb:
+  uri: mongodb+srv://mdbatista:ZUr8wc9BMYdH8N9p@dedicated.kavqe.mongodb.net/four-paws
+  database: four-paws

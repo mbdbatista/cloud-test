@@ -1,27 +1,34 @@
 package com.cloud.framework.models
 
 import com.cloud.domain.entities.Pet
-import io.micronaut.core.annotation.Introspected
-import org.bson.codecs.pojo.annotations.BsonCreator
-import org.bson.codecs.pojo.annotations.BsonProperty
+import io.micronaut.data.annotation.DateCreated
+import io.micronaut.data.annotation.DateUpdated
+import io.micronaut.data.annotation.GeneratedValue
+import io.micronaut.data.annotation.Id
+import io.micronaut.data.annotation.MappedEntity
+import io.micronaut.serde.annotation.Serdeable.Serializable
+import io.micronaut.serde.annotation.Serdeable.Deserializable
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
-@Introspected
-
-data class PetModel @BsonCreator constructor(
-    @param:BsonProperty("id")
+@MappedEntity
+@Deserializable
+@Serializable
+data class PetModel(
+    @field:Id
     val id: String,
-    @param:BsonProperty("name")
     val name: String,
-    @param:BsonProperty("type")
     val type: String,
-    @param:BsonProperty("gender")
     val gender: String,
-    @param:BsonProperty("adoptedDate")
-    val adoptedDate: LocalDateTime?
+    var adoptedDate: LocalDateTime?,
+    @field:DateCreated
+    val createdAt: Instant?,
+    @field:DateUpdated
+    val updatedAt: Instant?
 ) {
     fun toDomain() = Pet(
-        id, name, type, gender, adoptedDate
+        id, name, type, gender, adoptedDate, LocalDateTime.ofInstant(createdAt, ZoneOffset.ofHours(-3)) , LocalDateTime.ofInstant(updatedAt, ZoneOffset.ofHours(-3))
     )
 
     companion object {
@@ -30,7 +37,9 @@ data class PetModel @BsonCreator constructor(
             name = pet.name,
             type = pet.type,
             gender = pet.gender,
-            adoptedDate = pet.adoptedDate
+            adoptedDate = pet.adoptedDate,
+            createdAt = pet.createdAt?.toInstant(ZoneOffset.ofHours(-3)),
+            updatedAt = pet.updatedAt?.toInstant(ZoneOffset.ofHours(-3)),
         )
     }
 }

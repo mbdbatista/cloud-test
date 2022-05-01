@@ -1,21 +1,23 @@
 package com.cloud.framework.controllers
 
 import com.cloud.adapter.operators.CreatePetOperator
+import com.cloud.adapter.operators.GetPetOperator
 import com.cloud.adapter.serializers.input.AlterPetInput
 import com.cloud.adapter.serializers.input.CreatePetInput
 import com.cloud.adapter.serializers.output.CreatePetOutput
-import com.cloud.framework.ResourceNotFoundException
+import com.cloud.adapter.serializers.output.GetPetOutput
 import io.micronaut.http.annotation.*
 import javax.validation.Valid
 
 @Controller("/pet")
 open class PetController(
-    private val createPetOperator: CreatePetOperator
+    private val createPetOperator: CreatePetOperator,
+    private val getPetOperator: GetPetOperator
 ) {
 
     @Get("/{id}")
-    fun get(@PathVariable id: String): String {
-        return "Busca o pet: $id"
+    fun get(@PathVariable id: String): GetPetOutput {
+        return getPetOperator.get(id)
     }
 
     @Get("/")
@@ -25,12 +27,11 @@ open class PetController(
 
     @Post("/")
     open fun post(@Body @Valid pet: CreatePetInput): CreatePetOutput {
-        return createPetOperator.create(pet)
+        return createPetOperator.create(pet.toDTO())
     }
 
     @Put("/{id}")
     fun put(@PathVariable id: String, @Body pet: AlterPetInput): String {
-        throw ResourceNotFoundException()
         return "Atualizando o pet, id: $id, name: ${pet.name}, type: ${pet.type}, gender: ${pet.gender}"
     }
 
