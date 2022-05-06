@@ -1,7 +1,7 @@
 package com.cloud.framework.interceptors
 
-import com.cloud.adapter.serializers.output.BaseOutput
-import com.cloud.adapter.serializers.output.ErrorOutput
+import com.cloud.adapter.serializers.output.base.BaseOutput
+import com.cloud.adapter.serializers.output.base.ErrorOutput
 import com.cloud.business.errors.ResourceNotFoundException
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.http.HttpRequest

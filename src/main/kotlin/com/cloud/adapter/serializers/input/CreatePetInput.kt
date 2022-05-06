@@ -4,6 +4,7 @@ import com.cloud.business.dto.PetDto
 import com.cloud.domain.enums.PetGender
 import com.cloud.domain.enums.PetType
 import io.micronaut.core.annotation.Introspected
+import org.bson.types.ObjectId
 import java.util.UUID
 import javax.validation.constraints.NotBlank
 
@@ -18,7 +19,7 @@ data class CreatePetInput (
     )
 {
     fun toDTO() = PetDto(
-        id = UUID.randomUUID().toString(),
+        id = ObjectId.get().toHexString(),
         name = name,
         type = type,
         gender = gender,

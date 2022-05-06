@@ -2,17 +2,23 @@ package com.cloud.framework.controllers
 
 import com.cloud.adapter.operators.CreatePetOperator
 import com.cloud.adapter.operators.GetPetOperator
+import com.cloud.adapter.operators.ListPetOperator
 import com.cloud.adapter.serializers.input.AlterPetInput
 import com.cloud.adapter.serializers.input.CreatePetInput
+import com.cloud.adapter.serializers.input.ListPetInput
 import com.cloud.adapter.serializers.output.CreatePetOutput
 import com.cloud.adapter.serializers.output.GetPetOutput
+import com.cloud.adapter.serializers.output.ListPetOutput
+import com.cloud.domain.enums.PetGender
+import com.cloud.domain.enums.PetType
 import io.micronaut.http.annotation.*
 import javax.validation.Valid
 
 @Controller("/pet")
 open class PetController(
     private val createPetOperator: CreatePetOperator,
-    private val getPetOperator: GetPetOperator
+    private val getPetOperator: GetPetOperator,
+    private val listPetOperator: ListPetOperator
 ) {
 
     @Get("/{id}")
@@ -21,8 +27,14 @@ open class PetController(
     }
 
     @Get("/")
-    fun list(@QueryValue name: String?, @QueryValue type: String?, @QueryValue gender: String?, @QueryValue isAdopted: Boolean?): String {
-        return "Listando pets com name: $name, type: $type, gender: $gender, isAdopted: $isAdopted"
+    fun list(@QueryValue name: String?, @QueryValue type: PetType?, @QueryValue gender: PetGender?, @QueryValue isAdopted: Boolean?): ListPetOutput {
+        val input = ListPetInput(
+            name = name,
+            type = type,
+            gender = gender,
+            isAdopted = isAdopted
+        )
+        return listPetOperator.list(input)
     }
 
     @Post("/")

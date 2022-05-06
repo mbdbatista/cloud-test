@@ -4,6 +4,7 @@ import com.cloud.business.repositories.PetRepository
 import com.cloud.domain.entities.Pet
 import com.cloud.framework.models.PetModel
 import com.cloud.framework.repositories.data.PetRepositoryData
+import com.cloud.framework.utils.StringUtils
 import jakarta.inject.Singleton
 import java.time.LocalDateTime
 
@@ -12,11 +13,12 @@ class PetRepositoryImpl(
     private val petRepositoryData: PetRepositoryData
 ): PetRepository {
     override fun getById(id: String): Pet? {
-        val pet = petRepositoryData.findById(id)
-        if (pet.isEmpty){
-            return null
-        }
-        return pet.get().toDomain()
+        val pet = petRepositoryData.existsById(StringUtils.toObjectId(id))
+//        if (pet.isEmpty){
+//            return null
+//        }
+//        return pet.get().toDomain()
+        return Pet(id = "", type = "", gender = "", name = "", createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now(), adoptedDate = LocalDateTime.now())
     }
 
     override fun list(name: String?, type: String?, gender: String?, isAdopted: Boolean?): List<Pet> {
@@ -52,18 +54,18 @@ class PetRepositoryImpl(
         return created.toDomain()
     }
 
-    override fun alter(pet: Pet): Pet? {
+    override fun alter(pet: Pet): Pet {
         val petModel = PetModel.fromDomain(pet)
         val updated = petRepositoryData.update(petModel)
         return updated.toDomain()
     }
 
     override fun delete(id: String) {
-        return petRepositoryData.deleteById(id)
+        return petRepositoryData.deleteById(StringUtils.toObjectId(id))
     }
 
     override fun adopt(id: String, isAdopted: Boolean): Pet? {
-        val entity = petRepositoryData.findById(id).get()
+        val entity = petRepositoryData.findById(StringUtils.toObjectId(id)).get()
         entity.adoptedDate = if (isAdopted) LocalDateTime.now() else null
         val updated = petRepositoryData.update(entity)
         return updated.toDomain()

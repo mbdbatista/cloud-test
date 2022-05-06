@@ -1,15 +1,17 @@
 package com.cloud.business.useCases
 
+import com.cloud.business.dto.FilterPetDto
 import com.cloud.business.errors.ResourceNotFoundException
 import com.cloud.business.repositories.PetRepository
 import com.cloud.domain.entities.Pet
 import jakarta.inject.Singleton
+
 @Singleton
-class GetPetUseCase (
+class ListPetUseCase (
     private val petRepository: PetRepository
-        )
+    )
 {
-    fun execute(id: String): Pet {
-        return petRepository.getById(id) ?: throw ResourceNotFoundException(code = "PET-001", message = "Pet not found.")
+    fun execute(filter: FilterPetDto): List<Pet> {
+        return petRepository.list(filter.name, filter.type.toString(), filter.gender.toString(), filter.isAdopted)
     }
 }
