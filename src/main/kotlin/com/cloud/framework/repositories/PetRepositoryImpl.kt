@@ -11,14 +11,13 @@ import java.time.LocalDateTime
 @Singleton
 class PetRepositoryImpl(
     private val petRepositoryData: PetRepositoryData
-): PetRepository {
+) : PetRepository {
     override fun getById(id: String): Pet? {
-        val pet = petRepositoryData.existsById(StringUtils.toObjectId(id))
-//        if (pet.isEmpty){
-//            return null
-//        }
-//        return pet.get().toDomain()
-        return Pet(id = "", type = "", gender = "", name = "", createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now(), adoptedDate = LocalDateTime.now())
+        val pet = petRepositoryData.findById(StringUtils.toObjectId(id))
+        if (pet.isEmpty) {
+            return null
+        }
+        return pet.get().toDomain()
     }
 
     override fun list(name: String?, type: String?, gender: String?, isAdopted: Boolean?): List<Pet> {
@@ -43,7 +42,7 @@ class PetRepositoryImpl(
             pets = pets.filter { if (isAdopted) it.adoptedDate != null else it.adoptedDate == null }
         }
 
-        pets = pets.sortedWith( compareBy { it.createdAt })
+        pets = pets.sortedWith(compareBy { it.createdAt })
 
         return pets.map { it.toDomain() }
     }
